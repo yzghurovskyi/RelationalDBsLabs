@@ -12,10 +12,10 @@ class EditPlayer(npyscreen.ActionFormV2):
         self.wgLastName = self.add(npyscreen.TitleText, name="Last Name:")
         self.wgHeight = self.add(npyscreen.TitleText, name="Height:")
         self.wgDateOfBirth = self.add(npyscreen.TitleDateCombo, name="Date of birth:")
-        self.wgIsLegionary = self.add(npyscreen.TitleSelectOne,
+        self.wgIsInjured = self.add(npyscreen.TitleSelectOne,
                                       max_height=2,
                                       value=[0, ],
-                                      name='IsLegionary:',
+                                      name='IsInjured:',
                                       values=['False', 'True'],
                                       scroll_exit=True)
         self.wgPosition = self.add(npyscreen.TitleSelectOne,
@@ -50,7 +50,7 @@ class EditPlayer(npyscreen.ActionFormV2):
             self.wgLastName.value = player.last_name
             self.wgHeight.value = str(player.height)
             self.wgDateOfBirth.value = player.date_of_birth
-            self.wgIsLegionary.value = player.is_legionary
+            self.wgIsInjured.value = player.is_injured
         else:
             self.name = "New Player"
             self.player_id = ''
@@ -58,13 +58,13 @@ class EditPlayer(npyscreen.ActionFormV2):
             self.wgLastName.value = ''
             self.wgHeight.value = ''
             self.wgDateOfBirth.value = ''
-            self.wgIsLegionary.value = 0
+            self.wgIsInjured.value = 0
             self.wgPosition.value = 0
             self.wgClub.value = ''
 
     def on_ok(self):
         player = Player(height=self.wgHeight.value,
-                        is_legionary=bool(self.wgIsLegionary.value[0]),
+                        is_injured=bool(self.wgIsInjured.value[0]),
                         first_name=self.wgFirstName.value,
                         last_name=self.wgLastName.value,
                         date_of_birth=self.wgDateOfBirth.value)

@@ -13,14 +13,8 @@ class FootballDatabase(object):
     def __init__(self):
         self.conn = None
 
-    def create_tables(self) -> None:
-        script_file = open('{0}\scripts\createTables.sql'.format(os.path.dirname(__file__)), 'r')
-        with self.get_cursor() as cur:
-            cur.execute(script_file.read())
-            self.conn.commit()
-
-    def drop_tables(self) -> None:
-        script_file = open('{0}\scripts\dropTables.sql'.format(os.path.dirname(__file__)), 'r')
+    def exec_script_file(self, script_file_name: str) -> None:
+        script_file = open('{0}\scripts\{1}'.format(os.path.dirname(__file__), script_file_name), 'r')
         with self.get_cursor() as cur:
             cur.execute(script_file.read())
             self.conn.commit()
@@ -87,7 +81,7 @@ class FootballDatabase(object):
             cur.execute(script, [player_id])
             db_player = cur.fetchone()
         return Player(id=db_player['player_id'], first_name=db_player['first_name'], last_name=db_player['last_name'],
-                      date_of_birth=db_player['date_of_birth'], is_legionary=db_player['is_legionary'],
+                      date_of_birth=db_player['date_of_birth'], is_injured=db_player['is_injured'],
                       height=db_player['height'], club_id=db_player['club_id'], position_id=db_player['position_id'])
 
     def get_players(self) -> list:
@@ -118,12 +112,12 @@ class FootballDatabase(object):
 
     def add_player(self, player: Player) -> None:
         insert_script = """
-            INSERT INTO players (first_name, last_name, date_of_birth, is_legionary, position_id, height, club_id) 
+            INSERT INTO players (first_name, last_name, date_of_birth, is_injured, position_id, height, club_id) 
             VALUES (%s, %s, %s, %s, %s, %s, %s)"""
         insert_data = (player.first_name,
                        player.last_name,
                        player.date_of_birth,
-                       player.is_legionary,
+                       player.is_injured,
                        player.position_id,
                        player.height,
                        player.club_id)
@@ -134,11 +128,11 @@ class FootballDatabase(object):
     def update_player(self, player: Player) -> None:
         update_script = """
                     UPDATE players
-                    SET (first_name, last_name, date_of_birth, is_legionary, position_id, height ,club_id) = 
+                    SET (first_name, last_name, date_of_birth, is_injured, position_id, height ,club_id) = 
                         (%s, %s, %s, %s, %s, %s, %s) 
                     WHERE player_id = %s;"""
         update_data = (player.first_name, player.last_name,
-                       player.date_of_birth, player.is_legionary,
+                       player.date_of_birth, player.is_injured,
                        player.position_id, player.height, player.club_id, player.id)
         with self.get_cursor() as cur:
             cur.execute(update_script, update_data)

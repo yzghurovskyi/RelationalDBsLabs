@@ -11,14 +11,12 @@ CREATE TABLE positions (
   name        VARCHAR(80) NOT NULL
 );
 
-INSERT INTO positions (name) VALUES ('Goalkeeper'), ('Defender'), ('Midfielder'), ('Forward');
-
 CREATE TABLE players (
   player_id     SERIAL PRIMARY KEY,
   first_name    text        NOT NULL,
   last_name     VARCHAR(80) NOT NULL,
   date_of_birth DATE        NOT NULL,
-  is_legionary  boolean     NOT NULL,
+  is_injured  boolean     NOT NULL,
   height        INTEGER     NOT NULL,
   club_id       INTEGER,
   position_id   INTEGER     NOT NULL,

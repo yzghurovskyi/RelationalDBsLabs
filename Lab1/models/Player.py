@@ -10,13 +10,13 @@ class Player(DbEntity):
                  date_of_birth: datetime=None,
                  position_id: int=None,
                  height: int=None,
-                 is_legionary: bool=None,
+                 is_injured: bool=None,
                  club_id: int=None,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.position_id = position_id
         self.height = height
-        self.is_legionary = is_legionary
+        self.is_injured = is_injured
         self.club_id = club_id
         self.first_name = first_name
         self.last_name = last_name

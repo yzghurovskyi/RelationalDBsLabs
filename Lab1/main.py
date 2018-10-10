@@ -15,8 +15,9 @@ class FootballDBApplication(npyscreen.NPSAppManaged):
     def onStart(self):
         self.database = FootballDatabase()
         self.database.connect()
-        # self.database.drop_tables()
-        # self.database.create_tables()
+        self.database.exec_script_file('dropTables.sql')
+        self.database.exec_script_file('createTables.sql')
+        self.database.exec_script_file('generateData.sql')
         self.addForm("MAIN", EntityListDisplay)
         self.addForm("PLAYERSLIST", PlayersListDisplay)
         self.addForm("EDITPLAYER", EditPlayer)
