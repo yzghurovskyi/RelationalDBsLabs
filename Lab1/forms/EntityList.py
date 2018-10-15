@@ -6,7 +6,9 @@ class EntityList(npyscreen.MultiLineAction):
         super(EntityList, self).__init__(*args, **keywords)
 
     def actionHighlighted(self, act_on_this, keypress):
-        if 'search' in act_on_this:
+        if 'Full' in act_on_this:
+            self.parent.parentApp.switchForm('TEXTSEARCH')
+        elif 'Advanced' in act_on_this:
             self.parent.parentApp.switchForm('ADVANCEDSEARCH')
         else:
             self.parent.parentApp.switchForm('{0}LIST'.format(act_on_this.upper()))
@@ -22,7 +24,7 @@ class EntityListDisplay(npyscreen.FormMutt):
         })
 
     def beforeEditing(self):
-        self.wMain.values = ['Players', 'Tournaments', 'Clubs', 'Advanced players search']
+        self.wMain.values = ['Players', 'Tournaments', 'Clubs', 'Advanced players search', 'Full text search tournament']
         self.wMain.display()
 
     def when_exit(self, *args, **keywords):

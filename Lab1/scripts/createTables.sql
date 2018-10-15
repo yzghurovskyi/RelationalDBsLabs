@@ -11,6 +11,8 @@ CREATE TABLE positions (
   name        VARCHAR(80) NOT NULL
 );
 
+INSERT INTO positions (name) VALUES ('Goalkeeper'), ('Defender'), ('Midfielder'), ('Forward');
+
 CREATE TABLE players (
   player_id     SERIAL PRIMARY KEY,
   first_name    text        NOT NULL,
@@ -31,9 +33,16 @@ CREATE TABLE players (
 CREATE TABLE tournaments (
   tournament_id SERIAL PRIMARY KEY,
   name VARCHAR(80) NOT NULL,
-  description text NOT NULL
+  description text NOT NULL,
+  tsv tsvector NOT NULL
 );
 
+CREATE INDEX text_search_idx ON tournaments USING GIN (tsv);
+
+CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE
+ON tournaments
+FOR EACH ROW EXECUTE PROCEDURE
+tsvector_update_trigger(tsv, 'pg_catalog.english', description);
 
 CREATE TABLE clubs_tournaments (
   club_id       INTEGER NOT NULL,

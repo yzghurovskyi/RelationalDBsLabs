@@ -6,3 +6,6 @@ class Tournament(DbEntity):
         super().__init__(*args, **kwargs)
         self.name = name
         self.description = description
+
+    def __str__(self):
+        return '(<{0}>:<{1}> - {2})'.format(self.id, self.name, self.description)

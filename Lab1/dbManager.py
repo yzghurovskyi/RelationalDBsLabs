@@ -1,4 +1,7 @@
+import math
 import os
+from random import random
+
 import psycopg2
 import psycopg2.extras
 
@@ -7,6 +10,7 @@ from models.Club import Club
 from models.Player import Player
 from models.Position import Position
 from models.Tournament import Tournament
+from faker import Faker
 
 
 class FootballDatabase(object):
@@ -36,6 +40,58 @@ class FootballDatabase(object):
         if self.conn is not None:
             self.conn.close()
             print('Database connection closed.')
+
+    def generate_random_players(self):
+        fake = Faker()
+        script = """INSERT INTO players(first_name, last_name, date_of_birth, is_injured, height, position_id, club_id)
+                    VALUES(%s, %s, %s, %s, %s, %s, (SELECT club_id FROM clubs ORDER BY random() LIMIT 1));"""
+        with self.get_cursor() as cur:
+            for i in range(1000):
+                cur.execute(script, [fake.first_name_male(),
+                                     fake.last_name_male(),
+                                     fake.date_of_birth(tzinfo=None, minimum_age=17, maximum_age=35),
+                                     random() > 0.5,
+                                     math.ceil(random() * 39 + 160),
+                                     math.ceil(random() * 3 + 1)])
+
+    def generate_random_clubs(self):
+        fake = Faker()
+        clubs_amount = 100
+        club_names = fake.words(nb=clubs_amount, ext_word_list=None, unique=True)
+        script = """INSERT INTO clubs(name, creation_date, number_of_trophies) VALUES (%s, %s, %s);"""
+        with self.get_cursor() as cur:
+            for i in range(clubs_amount):
+                cur.execute(script, [club_names[i],
+                                     fake.date_of_birth(tzinfo=None, minimum_age=5, maximum_age=200),
+                                     math.ceil(random() * 29 + 1)])
+
+    def generate_random_tournaments(self):
+        fake = Faker()
+        script = """INSERT INTO tournaments(name, description) VALUES (%s, %s);"""
+        with self.get_cursor() as cur:
+            for i in range(20):
+                cur.execute(script, [fake.word(), fake.text()])
+
+    def text_search_by_words(self, words: list) -> list:
+        search_words = ' & '.join(words)
+        script = """SELECT id, ts_headline('english', description, q) description, name
+                    FROM (SELECT tournament_id id, description, name, q
+                          FROM tournaments, to_tsquery('english', %s) q
+                          WHERE tsv @@ q) AS t;"""
+        with self.get_cursor() as cur:
+            cur.execute(script, [search_words])
+            tournaments = cur.fetchall()
+        return [Tournament(id=t['id'], name=t['name'], description=t['description']) for t in tournaments]
+
+    def text_search_by_phrase(self, phrase: str) -> list:
+        script = """SELECT id, ts_headline('english', description, q) description, name
+                            FROM (SELECT tournament_id id, description, name, q
+                                  FROM tournaments, phraseto_tsquery('english', %s) q
+                                  WHERE tsv @@ q) AS t;"""
+        with self.get_cursor() as cur:
+            cur.execute(script, [phrase])
+            tournaments = cur.fetchall()
+        return [Tournament(id=t['id'], name=t['name'], description=t['description']) for t in tournaments]
 
     def advanced_player_search(self,
                                min_height: int,
@@ -280,7 +336,6 @@ class FootballDatabase(object):
         with self.get_cursor() as cur:
             cur.execute(script, [club_id])
             tournaments = cur.fetchall()
-            self.conn.commit()
         return [Tournament(id=t['id'], name=t['name']) for t in tournaments]
 
     # endregion

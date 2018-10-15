@@ -1,7 +1,6 @@
 import npyscreen
 
 
-
 class FindPlayer(npyscreen.ActionFormV2):
     def create(self):
         self.value = None
