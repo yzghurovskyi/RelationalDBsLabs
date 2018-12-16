@@ -1,9 +1,11 @@
 import math
+import os
 from random import random
 
+import sqlalchemy
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
-import sqlalchemy.orm.session
+from sqlalchemy.orm.session import Session
 
 from config.config import get_url_connection
 from config.session_scope import session_scope
@@ -13,6 +15,7 @@ from models.Position import Position
 from models.Tournament import Tournament
 from models.Base import Base
 from models.ClubTournament import clubs_tournaments
+from models.ClubAudit import clubs_audit
 from faker import Faker
 
 
@@ -24,7 +27,7 @@ class FootballDatabase(object):
         Base.metadata.create_all(bind=self.engine)
         self.sessionMaker = sessionmaker()
 
-    def get_session(self) -> sqlalchemy.orm.session.Session:
+    def get_session(self) -> Session:
         return self.sessionMaker()
 
     def connect(self):
@@ -37,6 +40,11 @@ class FootballDatabase(object):
         if self.sessionMaker is not None:
             self.sessionMaker.close_all()
             print('Database connection closed.')
+
+    def execute_script(self, script_file_name: str) -> None:
+        script_file = open('{0}\scripts\{1}'.format(os.path.dirname(__file__), script_file_name), 'r',  encoding="utf8")
+        with self.engine.connect() as con:
+            con.execute(sqlalchemy.text(script_file.read()))
 
     # region Random data generating
     def generate_positions(self) -> None:

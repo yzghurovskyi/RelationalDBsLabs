@@ -1,15 +1,7 @@
-## Лабораторна робота № 1.
-### Ознайомлення з базовими операціями СУБД PostgreSQL
-#### Варіант №10:  
-* Пошук за атрибутами: *діапазон чисел, перелічення*
-* Повнотекстовий пошук: *обов’язкове входження слова, ціла фраза*
+## Лабораторна робота № 2.
 
+1. Переробити програму з ЛР№1, переписавши запити доступу до баз даних у вигляді ORM. Рекомендована бібліотека: Python/SQLAlchemy (https://www.sqlalchemy.org/) або будь-яка подібна для інших мов програмування.
 
-#### Графічне подання розробленої моделі «сутність-зв’язок»
-![alt text](https://github.com/yzghurovskyi/RelationalDBsLabs/blob/master/Lab1/screenshots/DBLab1.png)
-#### Структура бази даних
-![alt text](https://github.com/yzghurovskyi/RelationalDBsLabs/blob/master/Lab1/screenshots/Table_Relations_Lab1.png)
-#### 2-3 копії екранних форм (screenshots).
-![alt text](https://github.com/yzghurovskyi/RelationalDBsLabs/blob/master/Lab1/screenshots/mainMenu.png)
-![alt text](https://github.com/yzghurovskyi/RelationalDBsLabs/blob/master/Lab1/screenshots/playerForm.png)
-![alt text](https://github.com/yzghurovskyi/RelationalDBsLabs/blob/master/Lab1/screenshots/advancedPlayerSearch.png)
+2. Реалізувати тригер та серверну процедуру, що автоматизує деяку задачу над базою даних з ЛР№1. Обидві процедури мають включати цикл та умовний оператор.
+
+3. Проаналізувати у вигляді наочних прикладів з БД ЛР№1 реалізацію рівнів ізоляції транзакцій (READ COMMITTED, REPEATABLE READ, SERIALIZABLE) шляхом створення необхідних запитів у двох окремих транзакціях, слідкуючи за обсягом інформації, що повертається, та блокуванням транзакцій. Забезпечити можливість виявлення відповідних феноменів.
